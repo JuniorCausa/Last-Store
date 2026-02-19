@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Last Store</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial;
+    background:#0f0f0f;
+    color:white;
+}
+
+header{
+    background:linear-gradient(90deg,#00c6ff,#0072ff);
+    padding:20px;
+    font-size:28px;
+    text-align:center;
+    font-weight:bold;
+}
+
+.container{
+    padding:20px;
+    max-width:700px;
+    margin:auto;
+}
+
+.card{
+    background:#1c1c1c;
+    padding:20px;
+    border-radius:15px;
+    margin-bottom:20px;
+    box-shadow:0 0 15px rgba(0,198,255,0.3);
+}
+
+input, textarea{
+    width:100%;
+    padding:10px;
+    margin-top:10px;
+    border:none;
+    border-radius:8px;
+}
+
+textarea{
+    min-height:100px;
+}
+
+button{
+    margin-top:15px;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    background:#00c6ff;
+    font-weight:bold;
+    cursor:pointer;
+    width:100%;
+}
+
+button:hover{
+    background:#0072ff;
+    color:white;
+}
+</style>
+</head>
+
+<body>
+
+<header>🔥 LAST STORE 🔥</header>
+
+<div class="container">
+
+<div class="card">
+<h3>Datos del Cliente</h3>
+<input type="text" id="name" placeholder="Nombre del jugador">
+<input type="text" id="whatsapp" placeholder="WhatsApp">
+</div>
+
+<div class="card">
+<h3>Pedido Personalizado</h3>
+<textarea id="pedido" placeholder="Escribe aquí lo que deseas comprar..."></textarea>
+<button onclick="sendOrder()">Enviar Pedido</button>
+</div>
+
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"></script>
+
+<script>
+
+// 🔵 PON AQUÍ TU CONFIGURACIÓN DE FIREBASE
+const firebaseConfig = {
+  apiKey: "TU_APIKEY",
+  authDomain: "TU_PROYECTO.firebaseapp.com",
+  databaseURL: "https://TU_PROYECTO-default-rtdb.firebaseio.com",
+  projectId: "TU_PROYECTO",
+  storageBucket: "TU_PROYECTO.appspot.com",
+  messagingSenderId: "XXXXX",
+  appId: "XXXXX"
+};
+
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
+
+function generarID(){
+    return "LS-" + Math.floor(Math.random()*1000000);
+}
+
+function sendOrder(){
+
+    let name = document.getElementById("name").value;
+    let whatsapp = document.getElementById("whatsapp").value;
+    let pedido = document.getElementById("pedido").value;
+
+    if(name=="" || whatsapp=="" || pedido==""){
+        alert("Completa todos los campos.");
+        return;
+    }
+
+    let orderID = generarID();
+
+    let orderData = {
+        id:orderID,
+        player:name,
+        phone:whatsapp,
+        request:pedido,
+        date:new Date().toLocaleString()
+    };
+
+    database.ref("orders").push(orderData);
+
+    let mensaje = "🔥 *Nuevo Pedido - Last Store* 🔥%0A%0A";
+    mensaje += "🆔 ID: " + orderID + "%0A";
+    mensaje += "👤 Jugador: " + name + "%0A";
+    mensaje += "📱 WhatsApp: " + whatsapp + "%0A%0A";
+    mensaje += "📦 Pedido:%0A" + pedido;
+
+    // 🔴 CAMBIA ESTE NÚMERO POR EL TUYO
+    let tuNumero = "573002560262";
+
+    window.open("https://wa.me/"+5730002560262"?text="+mensaje, "_blank");
+
+    alert("Pedido enviado correctamente.");
+    location.reload();
+}
+
+</script>
+
+</body>
+</html>
